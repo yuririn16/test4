@@ -1,13 +1,16 @@
 import streamlit as st
 import numpy as np
 from PIL import Image
+import cv2
 
-# MediaPipeを特殊な方法で読み込む
+# ここを修正：一番シンプルで確実な読み込み方に戻します
 import mediapipe as mp
-from mediapipe.python.solutions import face_detection as mp_face_detection
-from mediapipe.python.solutions import drawing_utils as mp_drawing
 
-st.title("顔認識カメラ：最終解決版")
+st.title("顔認識カメラ：完成版")
+
+# MediaPipeの機能を準備
+mp_face_detection = mp.solutions.face_detection
+mp_drawing = mp.solutions.drawing_utils
 
 # カメラ入力
 img_file = st.camera_input("自撮りして顔を認識させてください")
@@ -16,8 +19,9 @@ if img_file is not None:
     image = Image.open(img_file)
     img_array = np.array(image)
 
-    # 直接クラスを呼び出す
+    # 顔検出を実行
     with mp_face_detection.FaceDetection(model_selection=0, min_detection_confidence=0.5) as face_det:
+        # Mediapipeは画像を処理
         results = face_det.process(img_array)
 
         if results.detections:
